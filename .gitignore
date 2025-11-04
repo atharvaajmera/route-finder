@@ -1,0 +1,54 @@
+# Compiled binaries
+*.exe
+*.out
+*.o
+*.obj
+server
+server.exe
+
+# Build artifacts
+backend/server
+backend/server.exe
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Node modules (if you add npm later)
+node_modules/
+package-lock.json
+
+# Python cache (if you add Python tools)
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# OS specific
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# User-specific test files
+test_*
+debug_*
