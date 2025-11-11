@@ -5,15 +5,37 @@
 *.obj
 server
 server.exe
+main
+main.exe
 
 # Build artifacts
 backend/server
 backend/server.exe
+backend/main
+backend/main.exe
 *.a
 *.lib
 *.dll
 *.so
 *.dylib
+
+# Visual Studio / MSVC
+*.pdb
+*.ilk
+*.idb
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+.vs/
+Debug/
+Release/
+x64/
+x86/
+
+# vcpkg (if installed locally in project)
+vcpkg/
+vcpkg_installed/
 
 # IDE and editor files
 .vscode/
@@ -52,3 +74,12 @@ desktop.ini
 # User-specific test files
 test_*
 debug_*
+
+# Dependencies (don't commit these large files)
+httplib.h
+json_single.hpp
+json.hpp
+
+# Documentation build outputs
+*.pdf
+docs/_build/

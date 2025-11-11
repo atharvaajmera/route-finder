@@ -273,7 +273,7 @@
   </head>
   <body>
     <header>
-      <h1>🎓 Scalable Test Centre Allotter v2.0</h1>
+      <h1>Test Centre Allotter</h1>
       <p class="subtitle">
         High-Performance Student-to-Centre Assignment System
       </p>
@@ -282,23 +282,15 @@
     <div class="container">
       <div class="control-panel">
         <div class="section">
-          <div class="section-title">📍 Step 1: Setup Centres</div>
+          <div class="section-title">Step 1: Setup Centres</div>
           <div class="info-box">Click on the map to add test centres</div>
           <div class="input-group">
             <label>Centre Capacity:</label>
             <input type="number" id="centreCapacity" value="50" min="1" />
           </div>
-          <div class="input-group">
-            <label>
-              <input type="checkbox" id="wheelchairAccess" checked />
-              Wheelchair Access (PwD)
-            </label>
-          </div>
-          <div class="input-group">
-            <label>
-              <input type="checkbox" id="femaleOnly" />
-              Female Only Centre
-            </label>
+          <div class="info-box" style="font-size: 12px; margin-top: 10px">
+            ℹAll centres are identical. Students are assigned based on distance
+            and priority tier (Female > PwD > Male).
           </div>
           <button class="btn btn-secondary" onclick="clearCentres()">
             Clear All Centres
@@ -306,7 +298,29 @@
         </div>
 
         <div class="section">
-          <div class="section-title">🗺️ Step 2: Build Graph</div>
+          <div class="section-title">Step 2: Build Graph</div>
+          <div class="input-group">
+            <label>Graph Detail Level:</label>
+            <select
+              id="graphDetail"
+              style="
+                width: 100%;
+                padding: 8px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+              "
+            >
+              <option value="low">Low (Fastest - Main roads only)</option>
+              <option value="medium" selected>
+                Medium (Balanced - Most roads)
+              </option>
+              <option value="high">High (Accurate - All roads)</option>
+            </select>
+          </div>
+          <div class="info-box" style="font-size: 11px; margin-top: 8px">
+            Lower detail = faster graph building & allotment, but less accurate
+            routes
+          </div>
           <button
             class="btn btn-primary"
             onclick="buildGraph()"
@@ -317,10 +331,14 @@
         </div>
 
         <div class="section">
-          <div class="section-title">👥 Step 3: Add Students</div>
+          <div class="section-title">Step 3: Add Students</div>
           <div class="input-group">
             <label>Number of Students:</label>
             <input type="number" id="studentCount" value="100" min="1" />
+          </div>
+          <div class="info-box" style="font-size: 12px; margin-top: 10px">
+            Students will be automatically distributed in a circle around your
+            test centres.
           </div>
           <button class="btn btn-secondary" onclick="simulateStudents()">
             Simulate Students
@@ -328,19 +346,60 @@
         </div>
 
         <div class="section">
-          <div class="section-title">⚡ Step 4: Run Allotment</div>
+          <div class="section-title">Step 4: Run Allotment</div>
           <button
             class="btn btn-success"
             onclick="runAllotment()"
             id="runAllotmentBtn"
             disabled
           >
-            🚀 RUN ALLOTMENT
+            RUN ALLOTMENT
+          </button>
+          <button
+            class="btn btn-secondary"
+            onclick="exportDiagnostics()"
+            id="exportDiagnosticsBtn"
+            disabled
+            style="margin-top: 10px"
+          >
+            Export Diagnostics (JSON)
           </button>
         </div>
 
         <div class="section">
-          <div class="section-title">📊 Statistics</div>
+          <div class="section-title">
+            ⚡ Performance Test: Parallel Dijkstra
+          </div>
+          <div
+            class="info-box"
+            style="
+              font-size: 12px;
+              background: #fff3cd;
+              border-left-color: #ffc107;
+            "
+          >
+            Test parallel Dijkstra computation from all centres. Compare
+            sequential vs parallel execution times.
+          </div>
+          <button
+            class="btn btn-primary"
+            onclick="testParallelDijkstra()"
+            id="testParallelBtn"
+            disabled
+            style="
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            "
+          >
+            🚀 Test Parallel Dijkstra
+          </button>
+          <div
+            id="parallelResults"
+            style="margin-top: 15px; font-size: 13px"
+          ></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Statistics</div>
           <div class="stats">
             <div class="stat-item">
               <span class="stat-label">Centres:</span>
@@ -362,19 +421,60 @@
         </div>
 
         <div class="section">
+          <div class="section-title">Student Categories</div>
+          <div class="stats">
+            <div class="stat-item">
+              <span class="stat-label">PwD:</span>
+              <span class="stat-value" id="statPwD">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Female:</span>
+              <span class="stat-value" id="statFemale">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Male:</span>
+              <span class="stat-value" id="statGeneral">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Performance Analytics:</div>
+          <div class="stats">
+            <div class="stat-item">
+              <span class="stat-label">Fetch OSM:</span>
+              <span class="stat-value" id="statFetchTime">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Build Graph:</span>
+              <span class="stat-value" id="statBuildGraphTime">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Build KD-Tree:</span>
+              <span class="stat-value" id="statKDTreeTime">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Dijkstra (×C):</span>
+              <span class="stat-value" id="statDijkstraTime">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Allotment:</span>
+              <span class="stat-value" id="statAllotmentTime">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">A* Pathfinding:</span>
+              <span class="stat-value" id="statAStarTime">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
           <div class="legend">
             <div class="legend-title">Legend</div>
+            <div id="legend-list"></div>
             <div class="legend-item">
-              <div class="legend-color" style="background: #ef4444"></div>
-              <span>Test Centres</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color" style="background: #3b82f6"></div>
-              <span>Unassigned Students</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color" style="background: #10b981"></div>
-              <span>Assigned Students</span>
+              <div class="legend-color" style="background: #6b7280"></div>
+              <span>Unassigned Student</span>
             </div>
           </div>
         </div>
@@ -389,7 +489,6 @@
       </div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
   </body>
