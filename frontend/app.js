@@ -166,8 +166,6 @@ async function buildGraph() {
   }
 }
 
-// ==================== STUDENT SIMULATION ====================
-
 function simulateStudents() {
   const count = parseInt(document.getElementById("studentCount").value);
 

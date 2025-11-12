@@ -19,6 +19,14 @@ backend/main.exe
 *.so
 *.dylib
 
+# Cache directory
+backend/cache/
+cache/
+
+# Test files
+test_*.json
+*_test.json
+
 # Visual Studio / MSVC
 *.pdb
 *.ilk
@@ -74,11 +82,6 @@ desktop.ini
 # User-specific test files
 test_*
 debug_*
-
-# Dependencies (don't commit these large files)
-httplib.h
-json_single.hpp
-json.hpp
 
 # Documentation build outputs
 *.pdf
